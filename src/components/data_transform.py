@@ -31,7 +31,7 @@ class DataTransformation:
     def get_data_transformer_object(self):
         
         try:
-            numerical_columns = ["externalsolarradiation","outsidetemperature","outsidehumidity","windspeed","temperature_avg"]
+            numerical_columns = ["externalsolarradiation","outsidetemperature","outsidehumidity","windspeed"]
             numerical_pipeline = Pipeline(
                 steps=[
                     ("imputer", SimpleImputer(strategy="median")),
@@ -79,19 +79,19 @@ class DataTransformation:
             
             train_arr = np.c_[
                 input_feature_train_arr,
-                np.arry(target_feature_train_df)
+                np.array(target_feature_train_df)
             ]
             
             test_arr =np.c_[
                 input_feature_test_arr,
-                np.arr[target_feature_test_df]
+                np.array(target_feature_test_df)
             ]
             # print(train_arr)
             # print(test_arr)
             logging.info("Save preprocessing object.")
             
             save_object(
-                fiel_path = self.data_tranformation_config.preprocessor_obj_file_path, object= preprocessor_object
+                filepath = self.data_tranformation_config.preprocessor_obj_file_path, object= preprocessor_object
             )
             
             return (

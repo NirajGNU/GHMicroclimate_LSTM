@@ -5,7 +5,7 @@ import os
 import pickle
 
 from matplotlib import pyplot as plt
-from IPython.core.pylabtools import figsize
+#from IPython.core.pylabtools import figsize
 from pandas.plotting import register_matplotlib_converters
 register_matplotlib_converters()
 import seaborn as sns 

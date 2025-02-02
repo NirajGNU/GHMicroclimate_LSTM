@@ -3,8 +3,8 @@ import sys
 from src.exception import CustomException
 from src.logger import logging
 
-# from src.components.data_transform import DataTransformation
-# from src.components.data_transform import DataTransformationConfig
+from src.components.data_transform  import DataTransformation
+from src.components.data_transform import DataTransformationConfig
 
 import pandas as pd
 import numpy as np
@@ -67,5 +67,5 @@ if __name__ == '__main__':
     cltrain_data = obj.initiate_data_clean('train.csv')
     cltest_data = obj.initiate_data_clean('test.csv')
     
-    # data_transformationobj = DataTransformation()
-    # data_transformationobj.initiate_data_transformation(cltrain_data,cltest_data)
+    data_transformationobj = DataTransformation(DataTransformationConfig)
+    data_transformationobj.initiate_data_transformation(cltrain_data,cltest_data)
