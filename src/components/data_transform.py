@@ -31,7 +31,6 @@ class DataTransformation:
     def get_data_transformer_object(self):
         
         try:
-            numerical_columns = ["externalsolarradiation","outsidetemperature","outsidehumidity","windspeed"]
             numerical_pipeline = Pipeline(
                 steps=[
                     ("imputer", SimpleImputer(strategy="median")),
@@ -41,12 +40,8 @@ class DataTransformation:
         
             logging.info("Data pipeline made to impute the missing data and scaling the required columns")
         
-            preprocessor = ColumnTransformer([
-                # Add your transformers here
-            ("num_pipeline", numerical_pipeline, numerical_columns)
-            ])
-            
-            return preprocessor
+                    
+            return numerical_pipeline
         
         except Exception as e:
             raise CustomException(e, sys)
@@ -54,28 +49,42 @@ class DataTransformation:
     def initiate_data_transformation(self, train_path, test_path):
         try:
             train_df = pd.read_csv(train_path)
+            # train_df = train_df.set_index('Datetime')
             test_df = pd.read_csv(test_path)
-            
+            # test_df = test_df.set_index('DateTime')
+                        
+                    
             logging.info("Read train and test data completed")
             
             logging.info("Obtaining the preprocessor object")
             
             preprocessor_object = self.get_data_transformer_object()
             
-            extra_column_name = ['geothermal1humidity','geothermal2humidity','geothermal3humidity','geothermal4humidity','geothermal_avg','temperature_avg','humidty123_avg','humidty4_avg']
+            extra_column_name = ['Datetime', 'geothermal1humidity','geothermal2humidity','geothermal3humidity','geothermal4humidity','geothermal_avg','humidty123_avg','humidty4_avg']
             traget_column_name = "temperature_avg"
             numerical_column = ["externalsolarradiation","outsidetemperature","outsidehumidity","windspeed"]
             
-            input_feature_train_df = train_df.drop(columns= extra_column_name,axis=1)
-            target_feature_train_df = train_df[traget_column_name]
+            input_feature_train_df = train_df.drop(columns= extra_column_name,axis=1) 
+            # target_feature_train_df = train_df[traget_column_name]
+            # print(target_feature_train_df)           
             
             input_feature_test_df = test_df.drop(columns=extra_column_name, axis=1)
-            target_feature_test_df= test_df[traget_column_name]
+            # target_feature_test_df = test_df[traget_column_name]
+            
             
             logging.info('Applying the preprocessing object on training dataf')
             
             input_feature_train_arr = preprocessor_object.fit_transform(input_feature_train_df)
-            input_feature_test_arr= preprocessor_object.transform(input_feature_test_df)
+            target_feature_train_df = input_feature_train_arr[:,-1]
+            input_feature_train_arr =input_feature_train_arr[:,:-1]
+            
+            input_feature_test_arr = preprocessor_object.fit_transform(input_feature_test_df)
+            target_feature_test_df = input_feature_test_arr[:,-1]
+            input_feature_test_arr =input_feature_test_arr[:,:-1]
+            
+            # input_feature_test_arr= preprocessor_object.transform(input_feature_test_df)
+            # target_feature_test_df = preprocessor_object.tranform(target_feature_test_df[[traget_column_name]])
+                        
             
             train_arr = np.c_[
                 input_feature_train_arr,
@@ -86,8 +95,8 @@ class DataTransformation:
                 input_feature_test_arr,
                 np.array(target_feature_test_df)
             ]
-            # print(train_arr)
-            # print(test_arr)
+            print(train_arr)
+            print(test_arr)
             logging.info("Save preprocessing object.")
             
             save_object(

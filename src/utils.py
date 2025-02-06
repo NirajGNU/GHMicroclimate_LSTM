@@ -3,6 +3,9 @@ from src.logger import logging
 
 import os
 import pickle
+import numpy as np
+
+
 
 from matplotlib import pyplot as plt
 #from IPython.core.pylabtools import figsize
@@ -24,6 +27,33 @@ def plot_histogram(x):
     plt.xlable('Value')
     plt.ylabel('Frequency')
     plt.show()
+    
+def replace_missing(attributes):
+    return attributes.fillna(attributes.median())
+
+def replace_outliers(attribute):
+    up_b = attribute.mean() + 2*attribute.std()
+    low_b = attribute.mean() - 2*attribute.std()
+    attribute = attribute.apply(lambda x: x if low_b < x < up_b else np.nan)
+    return replace_missing(attribute)
+
+def timeseries_unidataset(target_feature, time_steps=1):
+    Xs, ys = [], []
+    for i in range(len(target_feature)-time_steps):
+        v = target_feature[i:i+time_steps, :]
+        Xs.append(v)
+        ys.append(target_feature[i+time_steps])
+    return np.array(Xs), np.array(ys)
+
+def timeseries_multidataset(Input_feature, target_feature, time_steps=1):
+    Xs, ys = [], []
+    for i in range(len(Input_feature)-time_steps):
+        v = Input_feature[i:i+time_steps, :]
+        Xs.append(v)
+        ys.append(target_feature[i+time_steps])
+    return np.array(Xs), np.array(ys)
+
+
     
 def save_object(filepath, object):
     try:

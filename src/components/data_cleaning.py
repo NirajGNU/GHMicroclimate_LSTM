@@ -47,7 +47,7 @@ class DataClean:
             for col in col_list:
                 clean_df[col] = pd.to_numeric(clean_df[col],errors='coerce')
                 
-            logging.info("Data Cleaning initiated and convert all column into numerical categories")
+            logging.info("Data Cleaning initiated and convert all column into numerical categories")     
                 
             if str(filename)=='trian.csv':
                 clean_df.to_csv(self.dataclean_config.cltrain_data_path, index=True, header=True)
@@ -68,4 +68,6 @@ if __name__ == '__main__':
     cltest_data = obj.initiate_data_clean('test.csv')
     
     data_transformationobj = DataTransformation(DataTransformationConfig)
-    data_transformationobj.initiate_data_transformation(cltrain_data,cltest_data)
+    trainarr,_,_ = data_transformationobj.initiate_data_transformation(cltrain_data,cltest_data)
+    print(trainarr)
+ 
